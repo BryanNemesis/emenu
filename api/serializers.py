@@ -10,6 +10,8 @@ class MenuListSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'dish_count',
+            'date_added',
+            'date_updated',
             ]
 
     dish_count = serializers.SerializerMethodField(read_only=True)
