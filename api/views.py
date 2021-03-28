@@ -14,7 +14,7 @@ class MenuList(ListCreateAPIView):
     """
     Get list of non-empty menus with GET, or create a new one with POST.
     """
-    # permission_classes = [IsAuthenticatedOrReadOnly] 
+    permission_classes = [IsAuthenticatedOrReadOnly] 
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -54,7 +54,7 @@ class MenuDetail(RetrieveUpdateAPIView):
     """
     Get details of a menu with GET, or edit it with PUT or PATCH.
     """
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Menu.objects.all()
 
     def get_serializer_class(self):
