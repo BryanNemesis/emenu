@@ -1,15 +1,21 @@
 from datetime import timedelta, date
+import base64
 
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 
 from .models import Dish, Menu
 
 
+User = get_user_model()
+
 class MenuApiTests(APITestCase):
     def setUp(self):
-        client = APIClient(SERVER_NAME='localhost')
+        self.user = User.objects.create(username='someuser', password='somepassword')
+        self.client = APIClient(SERVER_NAME='localhost')
+        self.client.force_authenticate(user=self.user)
         d1 = Dish.objects.create(name='Stew', price='5', preparation_time=timedelta(minutes=30))
         d2 = Dish.objects.create(name='Sandwich', price='2', preparation_time=timedelta(minutes=15))
         d3 = Dish.objects.create(name='Sriracha', price='15', preparation_time=timedelta(seconds=5))
