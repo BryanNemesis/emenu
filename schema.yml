@@ -1,0 +1,279 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /api/:
+    get:
+      operationId: api_list
+      description: ''
+      parameters:
+      - in: query
+        name: added_after
+        schema:
+          type: string
+        description: View only menus updated after a date in YYYY-MM-DD format
+      - in: query
+        name: sort_by
+        schema:
+          type: string
+          enum:
+          - dish_count
+          - name
+        description: Choose to sort list by name or dish count, descending
+      - in: query
+        name: updated_after
+        schema:
+          type: string
+        description: View only menus created after a date in YYYY-MM-DD format
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuList'
+          description: ''
+    post:
+      operationId: api_create
+      description: ''
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuCreate'
+          description: ''
+  /api/{id}/:
+    get:
+      operationId: api_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuDetail'
+          description: ''
+    put:
+      operationId: api_update
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuCreate'
+          description: ''
+    patch:
+      operationId: api_partial_update
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuCreate'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuCreate'
+          description: ''
+components:
+  schemas:
+    DishDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        price:
+          type: string
+          format: decimal
+          maximum: 10000
+          minimum: -10000
+        preparation_time:
+          type: string
+        is_vegetarian:
+          type: boolean
+        date_added:
+          type: string
+          format: date
+          readOnly: true
+        date_updated:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - date_added
+      - date_updated
+      - description
+      - name
+      - preparation_time
+      - price
+    MenuCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        dishes:
+          type: array
+          items:
+            type: string
+      required:
+      - description
+      - dishes
+      - name
+    MenuDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        date_added:
+          type: string
+          format: date
+          readOnly: true
+        date_updated:
+          type: string
+          format: date
+          readOnly: true
+        dishes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DishDetail'
+      required:
+      - date_added
+      - date_updated
+      - description
+      - dishes
+      - name
+    MenuList:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        dish_count:
+          type: integer
+          readOnly: true
+        date_added:
+          type: string
+          format: date
+          readOnly: true
+        date_updated:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - date_added
+      - date_updated
+      - description
+      - dish_count
+      - name
+    PatchedMenuCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        dishes:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Session

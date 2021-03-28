@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .models import Dish, Menu
 
@@ -16,6 +17,7 @@ class MenuListSerializer(serializers.ModelSerializer):
 
     dish_count = serializers.SerializerMethodField(read_only=True)
 
+    @extend_schema_field(int)
     def get_dish_count(self, obj):
         return obj.dishes.count()
     
