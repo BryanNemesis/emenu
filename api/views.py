@@ -20,15 +20,7 @@ def menu_list(request):
      dish_count - to sort by number of dishes on a menu, descending
     """
     if request.method == 'GET':
-        # TODO: only view not empty menus.
-        # TODO: probably this could be done more effictiently...
-        sort_by = request.query_params.get('sort_by')
-        if sort_by == 'name':
-            qs = Menu.objects.all().order_by('name')
-        elif sort_by == 'dish_count':
-            qs = Menu.objects.all().annotate(Count('dishes')).order_by('-dishes__count')
-        else:
-            qs = Menu.objects.all()
+        qs = Menu.objects.exclude(dishes__isnull=True)
 
         added_after = request.query_params.get('added_after')
         if added_after:
@@ -36,7 +28,13 @@ def menu_list(request):
 
         updated_after = request.query_params.get('updated_after')
         if updated_after:
-            qs = qs.filter(date_updated__gt=datetime.strptime(updated_after, '%Y-%m-%d'))  
+            qs = qs.filter(date_updated__gt=datetime.strptime(updated_after, '%Y-%m-%d')) 
+
+        sort_by = request.query_params.get('sort_by')
+        if sort_by == 'name':
+            qs = qs.order_by('name')
+        elif sort_by == 'dish_count':
+            qs = qs.annotate(Count('dishes')).order_by('-dishes__count') 
 
         serializer = MenuListSerializer(qs, many=True)
         return Response(serializer.data, status=200)
