@@ -22,6 +22,8 @@ Change the working directory to the repository root.
 ```
 cd emenu
 ```
+Make sure the line endings in dailyreport&#46;sh were not changed to CRLF, if you're on Windows. If so, do `git config --global core.autocrlf false` and checkout the repo again.
+
 Build and run.
  ```
  docker-compose up -d
