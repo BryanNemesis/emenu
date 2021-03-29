@@ -6,7 +6,8 @@ paths:
   /api/:
     get:
       operationId: api_list
-      description: ''
+      description: Get list of non-empty menus with GET, or create a new one with
+        POST.
       parameters:
       - in: query
         name: added_after
@@ -29,7 +30,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -42,7 +43,8 @@ paths:
           description: ''
     post:
       operationId: api_create
-      description: ''
+      description: Get list of non-empty menus with GET, or create a new one with
+        POST.
       tags:
       - api
       requestBody:
@@ -58,8 +60,7 @@ paths:
               $ref: '#/components/schemas/MenuCreate'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -70,7 +71,7 @@ paths:
   /api/{id}/:
     get:
       operationId: api_retrieve
-      description: ''
+      description: Get details of a menu with GET, or edit it with PUT or PATCH.
       parameters:
       - in: path
         name: id
@@ -80,7 +81,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -91,7 +92,7 @@ paths:
           description: ''
     put:
       operationId: api_update
-      description: ''
+      description: Get details of a menu with GET, or edit it with PUT or PATCH.
       parameters:
       - in: path
         name: id
@@ -113,8 +114,7 @@ paths:
               $ref: '#/components/schemas/MenuCreate'
         required: true
       security:
-      - cookieAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -124,7 +124,7 @@ paths:
           description: ''
     patch:
       operationId: api_partial_update
-      description: ''
+      description: Get details of a menu with GET, or edit it with PUT or PATCH.
       parameters:
       - in: path
         name: id
@@ -145,8 +145,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedMenuCreate'
       security:
-      - cookieAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -164,6 +163,7 @@ components:
           maxLength: 100
         description:
           type: string
+          nullable: true
           maxLength: 1000
         price:
           type: string
@@ -185,7 +185,6 @@ components:
       required:
       - date_added
       - date_updated
-      - description
       - name
       - preparation_time
       - price
@@ -197,13 +196,13 @@ components:
           maxLength: 100
         description:
           type: string
+          nullable: true
           maxLength: 1000
         dishes:
           type: array
           items:
             type: string
       required:
-      - description
       - dishes
       - name
     MenuDetail:
@@ -214,6 +213,7 @@ components:
           maxLength: 100
         description:
           type: string
+          nullable: true
           maxLength: 1000
         date_added:
           type: string
@@ -230,7 +230,6 @@ components:
       required:
       - date_added
       - date_updated
-      - description
       - dishes
       - name
     MenuList:
@@ -241,6 +240,7 @@ components:
           maxLength: 100
         description:
           type: string
+          nullable: true
           maxLength: 1000
         dish_count:
           type: integer
@@ -256,7 +256,6 @@ components:
       required:
       - date_added
       - date_updated
-      - description
       - dish_count
       - name
     PatchedMenuCreate:
@@ -267,13 +266,13 @@ components:
           maxLength: 100
         description:
           type: string
+          nullable: true
           maxLength: 1000
         dishes:
           type: array
           items:
             type: string
   securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: Session
+    basicAuth:
+      type: http
+      scheme: basic
