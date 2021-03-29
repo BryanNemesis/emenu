@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+    web:
+        build: .
+        command: gunicorn emenu.wsgi:application --bind 0.0.0.0:8000
+        volumes:
+            - .:/home/app
+        ports:
+            - '8000:8000'
+        depends_on:
+            - db
+    db:
+        image: postgres
+        volumes:
+            - ./data/db:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=postgres
+    docs:
+        image: swaggerapi/swagger-ui
+        volumes:
+            - ./schema.yml:/schema.yml
+        ports:
+            - '8001:8080'
+        environment:
+            - SWAGGER_JSON=/schema.yml
