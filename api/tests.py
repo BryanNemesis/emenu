@@ -1,5 +1,4 @@
 from datetime import timedelta, date
-import base64
 
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -16,6 +15,10 @@ class MenuApiTests(APITestCase):
         self.user = User.objects.create(username='someuser', password='somepassword')
         self.client = APIClient(SERVER_NAME='localhost')
         self.client.force_authenticate(user=self.user)
+
+
+    @classmethod
+    def setUpTestData(cls):
         d1 = Dish.objects.create(name='Stew', price='5', preparation_time=timedelta(minutes=30))
         d2 = Dish.objects.create(name='Sandwich', price='2', preparation_time=timedelta(minutes=15))
         d3 = Dish.objects.create(name='Sriracha', price='15', preparation_time=timedelta(seconds=5))
@@ -98,7 +101,7 @@ class MenuApiTests(APITestCase):
         url = reverse('menu_detail', args=[1])
         data = {'name': 'New main menu', 'description': '', 'dishes': []}
         response = self.client.put(url, data)
-        obj = Menu.objects.get(id=1)
+        obj = Menu.objects.first()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['name'], 'New main menu')
         self.assertEqual(obj.name, 'New main menu')
@@ -108,7 +111,7 @@ class MenuApiTests(APITestCase):
         url = reverse('menu_detail', args=[1])
         data = {'name': 'New main menu', 'description': '', 'dishes': 'fries'}
         response = self.client.put(url, data)
-        obj = Menu.objects.get(id=1)
+        obj = Menu.objects.first()
         self.assertEqual(response.status_code, 400)
         self.assertEqual(obj.name, 'Main menu')
 
@@ -117,7 +120,7 @@ class MenuApiTests(APITestCase):
         url = reverse('menu_detail', args=[1])
         data = {'dishes': ['Stew', 'Sandwich', 'Sriracha']}
         response = self.client.patch(url, data)
-        obj = Menu.objects.get(id=1)
+        obj = Menu.objects.first()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['dishes']), 3)
         self.assertEqual(obj.dishes.count(), 3)
@@ -127,6 +130,6 @@ class MenuApiTests(APITestCase):
         url = reverse('menu_detail', args=[1])
         data = {'dishes': 'fries'}
         response = self.client.put(url, data)
-        obj = Menu.objects.get(id=1)
+        obj = Menu.objects.first()
         self.assertEqual(response.status_code, 400)
         self.assertEqual(obj.dishes.count(), 2)
