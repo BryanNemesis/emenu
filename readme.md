@@ -15,15 +15,23 @@ Docker, docker-compose.
 
 ## Installation guide
 Clone the repository.
-
+```
+git clone https://github.com/BryanNemesis/emenu.git emenu
+```
 Change the working directory to the repository root.
+```
+cd emenu
+```
+Build and run.
+ ```
+ docker-compose up -d
+ ```
+After first run, perform db migrations inside 'web' container.
+```
+docker-compose run web python manage.py migrate
+```
+API will be available under http://localhost:8000/.
 
-Build and run with `docker-compose up -d`.
-
-After first run, perform db migrations inside 'web' container with
-`docker-compose run web python manage.py migrate`.
-
-API will be available under http://localhost:8000.
-Documentation will be available under http://localhost:8001.
+Documentation of endpoints will be available under http://localhost:8001/.
 
 To update Swagger UI schema after making changes in the API, run `python manage.py spectacular --file schema.yml` inside the working directory or in the 'web' app and restart the 'docs' container.
